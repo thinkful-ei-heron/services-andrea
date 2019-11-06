@@ -9,7 +9,7 @@ describe('Shopping list service object', function() {
       id: 1,
       date_added: new Date('2029-01-22T16:28:32.615Z'),
       name: 'Chicken',
-      price: 5.00,
+      price: '5.00',
       category: 'Main',
       checked: true,
     },
@@ -17,7 +17,7 @@ describe('Shopping list service object', function() {
       id: 2,
       date_added: new Date('2100-05-22T16:28:32.615Z'),
       name: 'Bacon',
-      price: 4.00,
+      price: '4.00',
       category: 'Breakfast',
       checked: false,
     },
@@ -25,7 +25,7 @@ describe('Shopping list service object', function() {
       id:3, 
       date_added: new Date('1919-12-22T16:28:32.615Z'), 
       name: 'Oranges',
-      price: 3.00,
+      price: '3.00',
       category: 'Snack',
       checked: true,
     },
@@ -38,11 +38,10 @@ describe('Shopping list service object', function() {
     });
   });
   
-
-  after(()=> knexInstance.destroy());
   //truncate method will remove all data from the table
   before(() =>knexInstance('shopping_list').truncate());
-  
+
+  after(()=> knexInstance.destroy());
     
   context('Given "shopping_list" has data', () => {
       beforeEach(()=>{
@@ -50,6 +49,7 @@ describe('Shopping list service object', function() {
           .into('shopping_list')
           .insert(testItems)
       });
+
       it('getById() resolves an item by id from "shopping_list" table', () =>{
           const thirdId = 3
           const thirdTestItem= testItems[thirdId -1]
@@ -79,7 +79,6 @@ describe('Shopping list service object', function() {
           const newItemData = {
             name: 'updated name',
             price: 'updated price',
-            category: 'updated category',
             checked: 'updated checked',
             date_added: new Date(),
           }
@@ -92,6 +91,7 @@ describe('Shopping list service object', function() {
               })
           })
        })
+
       it('getAllItems() resolves all items from "shopping_list" table', () => {
         return ShoppingList.getAllItems(knexInstance)
          .then(actual => {
@@ -109,23 +109,22 @@ describe('Shopping list service object', function() {
               expect(actual).to.eql([])
            });
       });
+
       it('insertItem() inserts a new item and resolves the new article with an "id"', () =>{
           const newItem = {
             date_added: new Date('2020-01-01T00:00:00.000Z'),
             name: 'Test new title',
-            price: 5.00,
+            price: '6.00',
             category: 'Test new content',
-            checked: true,
           }
+          console.log(newItem);
           return ShoppingList.insertItem(knexInstance, newItem)
            .then(actual =>{
                expect(actual).to.eql({
-                   id: 1,
                    date_added: new Date (newItem.date_added),
                    name: newItem.name,
                    price: newItem.price,
                    category: newItem.category,
-                   checked: newItem.checked,
                })
            })
       })

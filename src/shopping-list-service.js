@@ -1,7 +1,9 @@
 /* eslint-disable strict */
 const ShoppingList = {
   getAllItems(knex){
-    return knex.select('*').from('shopping_list');
+    return knex
+      .select('*')
+      .from('shopping_list');
   },
 
   //CREATE
@@ -11,7 +13,7 @@ const ShoppingList = {
       .into('shopping_list')
       .returning('*')
       .then(rows => {
-        return rows[0]
+        return rows[0];
       });
   },
   //READ
