@@ -79,7 +79,12 @@ describe('Shopping list service object', function() {
           return ShoppingList.deleteItem(knexInstance, itemId)
            .then(() =>ShoppingList.getAllItems(knexInstance))
            .then(allItems =>{
-               const expected = testItems.filter(item => item.id !== itemId)
+               const expected = testItems
+                .filter(item => item.id !== itemId)
+                .map(item =>({
+                    ...item,
+                    checked: false,
+                }))
                expect(allItems).to.eql(expected)
            })
       })
@@ -104,7 +109,7 @@ describe('Shopping list service object', function() {
   });
 
   context('Given "shopping_list" has no data', ()=>{
-      it('getAllItems() resiolves an empty array', ()=>{
+      it('getAllItems() resolves an empty array', ()=>{
           return ShoppingList.getAllItems(knexInstance)
            .then(actual => {
               expect(actual).to.eql([])
