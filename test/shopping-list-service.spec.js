@@ -76,8 +76,8 @@ describe('Shopping list service object', function() {
 
       it('deleteItem() removes an item by id from "shopping_list" table', () =>{
           const itemId = 3
-          return ShoppingList.deleteItem(knex, itemId)
-           .then(() =>ShoppingList.getAllItems(knex))
+          return ShoppingList.deleteItem(knexInstance, itemId)
+           .then(() =>ShoppingList.getAllItems(knexInstance))
            .then(allItems =>{
                const expected = testItems.filter(item => item.id !== itemId)
                expect(allItems).to.eql(expected)
