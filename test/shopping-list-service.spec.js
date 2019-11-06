@@ -74,7 +74,24 @@ describe('Shopping list service object', function() {
                expect(allItems).to.eql(expected)
            })
       })
-    
+      it('updateItem() updates an item from the "shopping_list" table', ()=>{
+          const idOfItemToUpdate = 3
+          const newItemData = {
+            name: 'updated name',
+            price: 'updated price',
+            category: 'updated category',
+            checked: 'updated checked',
+            date_added: new Date(),
+          }
+          return ShoppingList.updateItem(knexInstance, idOfItemToUpdate, newItemData)
+             .then(() => ArticlesService.getById(db, idOfItemToUpdate))
+             .then(item => {
+              expect(item).to.eql({
+               id: idOfItemToUpdate,
+              ...newItemData,
+              })
+          })
+       })
       it('getAllItems() resolves all items from "shopping_list" table', () => {
         return ShoppingList.getAllItems(knexInstance)
          .then(actual => {
