@@ -65,6 +65,15 @@ describe('Shopping list service object', function() {
                })
            })
       })
+      it('deleteItem() removes an item by id from "shopping_list" table', () =>{
+          const itemId = 3
+          return ShoppingList.deleteItem(knex, itemId)
+           .then(() =>ShoppingList.getAllItems(knex))
+           .then(allItems =>{
+               const expected = testItems.filter(item => item.id !== itemId)
+               expect(allItems).to.eql(expected)
+           })
+      })
     
       it('getAllItems() resolves all items from "shopping_list" table', () => {
         return ShoppingList.getAllItems(knexInstance)
