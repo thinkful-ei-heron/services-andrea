@@ -11,7 +11,6 @@ describe('Shopping list service object', function() {
       name: 'Chicken',
       price: '5.00',
       category: 'Main',
-      checked: true,
     },
     {
       id: 2,
@@ -19,7 +18,6 @@ describe('Shopping list service object', function() {
       name: 'Bacon',
       price: '4.00',
       category: 'Breakfast',
-      checked: false,
     },
     {
       id:3, 
@@ -27,7 +25,6 @@ describe('Shopping list service object', function() {
       name: 'Oranges',
       price: '3.00',
       category: 'Snack',
-      checked: true,
     },
   ];
 
@@ -40,6 +37,7 @@ describe('Shopping list service object', function() {
   
   //truncate method will remove all data from the table
   before(() =>knexInstance('shopping_list').truncate());
+  afterEach(() =>knexInstance('shopping_list').truncate());
 
   after(()=> knexInstance.destroy());
     
@@ -49,6 +47,16 @@ describe('Shopping list service object', function() {
           .into('shopping_list')
           .insert(testItems)
       });
+      
+      it('getAllItems() resolves all items from "shopping_list" table', () => {
+        return ShoppingList.getAllItems(knexInstance)
+         .then(actual => {
+           expect(actual).to.eql(testItems.map(item =>({
+            ...item,
+            checked: false,
+          })));
+        });
+       });
 
       it('getById() resolves an item by id from "shopping_list" table', () =>{
           const thirdId = 3
@@ -60,11 +68,12 @@ describe('Shopping list service object', function() {
                    name: thirdTestItem.name,
                    price: thirdTestItem.price,
                    category: thirdTestItem.category,
-                   checked: thirdTestItem.checked,
                    date_added: thirdTestItem.date_added,
+                   checked: false,
                })
            })
       })
+
       it('deleteItem() removes an item by id from "shopping_list" table', () =>{
           const itemId = 3
           return ShoppingList.deleteItem(knex, itemId)
@@ -78,12 +87,13 @@ describe('Shopping list service object', function() {
           const idOfItemToUpdate = 3
           const newItemData = {
             name: 'updated name',
-            price: 'updated price',
-            checked: 'updated checked',
+            price: '7.00',
             date_added: new Date(),
+            category: "Main",
+            checked: true,
           }
           return ShoppingList.updateItem(knexInstance, idOfItemToUpdate, newItemData)
-             .then(() => ArticlesService.getById(db, idOfItemToUpdate))
+             .then(() => ShoppingList.getById(knexInstance, idOfItemToUpdate))
              .then(item => {
               expect(item).to.eql({
                id: idOfItemToUpdate,
@@ -91,16 +101,7 @@ describe('Shopping list service object', function() {
               })
           })
        })
-
-      it('getAllItems() resolves all items from "shopping_list" table', () => {
-        return ShoppingList.getAllItems(knexInstance)
-         .then(actual => {
-           expect(actual).to.eql(testItems.map(item =>({
-            ...item,
-            date_added: new Date(item.date_added)
-          })));
-        });
-      });
+  });
 
   context('Given "shopping_list" has no data', ()=>{
       it('getAllItems() resiolves an empty array', ()=>{
@@ -115,20 +116,22 @@ describe('Shopping list service object', function() {
             date_added: new Date('2020-01-01T00:00:00.000Z'),
             name: 'Test new title',
             price: '6.00',
-            category: 'Test new content',
+            category: 'Main',
+            checked: true,
           }
-          console.log(newItem);
           return ShoppingList.insertItem(knexInstance, newItem)
            .then(actual =>{
                expect(actual).to.eql({
+                   id: 1,
                    date_added: new Date (newItem.date_added),
                    name: newItem.name,
                    price: newItem.price,
                    category: newItem.category,
+                   checked: newItem.checked,
                })
            })
       })
   }); 
-  });
 });
+
 

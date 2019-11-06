@@ -34,7 +34,7 @@ const ShoppingList = {
   deleteItem(knex, id){
     return knex('shopping_list')
       .where({id})
-      .delete();
+      .del();
   }
 };
 
